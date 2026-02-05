@@ -1,26 +1,201 @@
-@import "tailwindcss";
+/* app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 355 100% 98%;
+    --foreground: 350 30% 15%;
+
+    --card: 355 100% 99%;
+    --card-foreground: 350 30% 15%;
+
+    --popover: 355 100% 99%;
+    --popover-foreground: 350 30% 15%;
+
+    --primary: 350 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 355 60% 95%;
+    --secondary-foreground: 350 30% 25%;
+
+    --muted: 355 30% 92%;
+    --muted-foreground: 350 15% 45%;
+
+    --accent: 30 60% 70%;
+    --accent-foreground: 30 50% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 350 30% 88%;
+    --input: 350 30% 88%;
+    --ring: 350 80% 55%;
+
+    --radius: 0.75rem;
+
+    /* Custom romantic variables */
+    --rose-gold: 30 60% 70%;
+    --deep-rose: 350 75% 45%;
+    --blush: 355 80% 92%;
+    --champagne: 40 50% 95%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 350 30% 8%;
+    --foreground: 355 30% 95%;
+
+    --card: 350 25% 12%;
+    --card-foreground: 355 30% 95%;
+
+    --popover: 350 25% 12%;
+    --popover-foreground: 355 30% 95%;
+
+    --primary: 350 75% 60%;
+    --primary-foreground: 350 30% 10%;
+
+    --secondary: 350 20% 18%;
+    --secondary-foreground: 355 30% 90%;
+
+    --muted: 350 20% 18%;
+    --muted-foreground: 350 20% 60%;
+
+    --accent: 30 50% 50%;
+    --accent-foreground: 30 50% 95%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 350 20% 20%;
+    --input: 350 20% 20%;
+    --ring: 350 75% 60%;
+
+    --rose-gold: 30 50% 50%;
+    --deep-rose: 350 70% 55%;
+    --blush: 350 30% 20%;
+    --champagne: 40 30% 15%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+    * {
+      @apply border-border;
+    }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Lora', serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .romantic-gradient {
+    background: linear-gradient(135deg, hsl(355 80% 92%) 0%, hsl(350 75% 88%) 50%, hsl(40 50% 95%) 100%);
+  }
+
+  .love-gradient {
+    background: linear-gradient(135deg, hsl(350 80% 55%) 0%, hsl(330 70% 50%) 100%);
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(30 60% 70%) 0%, hsl(40 70% 75%) 100%);
+  }
+
+  .romantic-shadow {
+    box-shadow: 0 10px 40px -10px hsl(350 80% 55% / 0.2);
+  }
+
+  .card-shadow {
+    box-shadow: 0 4px 20px -4px hsl(350 30% 50% / 0.1);
+  }
+
+  .glow-shadow {
+    box-shadow: 0 0 30px hsl(350 80% 55% / 0.3);
+  }
+
+  .glass-card {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border) / 0.5);
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Heart animation */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
 }
