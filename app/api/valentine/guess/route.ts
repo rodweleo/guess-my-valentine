@@ -9,8 +9,16 @@ export async function POST(req: Request) {
   const decoded = verifyToken(token);
 
   const valentines = await getValentineCollection();
+
+  let objectId: ObjectId;
+  try {
+    objectId = new ObjectId(String(decoded.vid as string));
+  } catch (e) {
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
   const valentine = await valentines.findOne({
-    _id: new ObjectId(decoded.vid),
+    _id: objectId,
   });
 
   if (!valentine) {

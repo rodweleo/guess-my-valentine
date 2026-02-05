@@ -10,17 +10,19 @@ export async function sendWhatsAppMessage(to: string, message: string) {
     },
   };
 
-  const res = await axios.post(
-    "https://chat.africastalking.com/whatsapp/message/send",
-    body,
-    {
+  axios
+    .post("https://chat.africastalking.com/whatsapp/message/send", body, {
       headers: {
-        apiKey: "",
+        apiKey: process.env.AFRICAS_TALKING_API_KEY!,
       },
-    }
-  );
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e) => {
+      console.log(e.response.data);
+    });
 
-  console.log(res);
   // Plug WhatsApp Cloud / Twilio here
   console.log(`📲 WhatsApp to ${to}: ${message}`);
 }

@@ -15,9 +15,14 @@ export async function POST(req: Request) {
     if (!tokenRecord || tokenRecord.used) throw new Error();
 
     const valentines = await getValentineCollection();
-    const valentine = await valentines.findOne({
-      _id: new ObjectId(decoded.vid),
-    });
+    let valentine;
+    try {
+      valentine = await valentines.findOne({
+        _id: new ObjectId(String(decoded.vid)),
+      });
+    } catch {
+      throw new Error();
+    }
 
     if (!valentine || valentine.status !== "PENDING") throw new Error();
 

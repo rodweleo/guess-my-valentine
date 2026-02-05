@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     updatedAt: new Date(),
   });
 
-  await sendWhatsAppMessage(sender_phone, `🔐 Your Valentine OTP is ${otp}`);
+  await sendWhatsAppMessage(sender_phone, `Your Valentine OTP is ${otp}`);
 
   return NextResponse.json({
     success: true,

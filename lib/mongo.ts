@@ -12,6 +12,8 @@ export async function getDb() {
 
   if (!client) {
     client = new MongoClient(uri, {
+      connectTimeoutMS: 30000,
+      keepAliveInitialDelay: 1,
       tls: true,
       tlsAllowInvalidCertificates: true, // For development only
       tlsAllowInvalidHostnames: true, // For development only

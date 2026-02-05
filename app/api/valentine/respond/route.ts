@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const newStatus = response === "YES" ? "ACCEPTED" : "DECLINED";
 
   const result = await valentines.findOneAndUpdate(
-    { _id: new ObjectId(decoded.vid) },
+    { _id: new ObjectId(String(decoded.vid as string)) },
     {
       $set: {
         status: newStatus,
