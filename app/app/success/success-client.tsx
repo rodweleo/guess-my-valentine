@@ -24,7 +24,7 @@ import Link from "next/link";
 export default function SuccessClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams.get("shortCode");
 
   const [copied, setCopied] = useState(false);
   const [shareLink, setShareLink] = useState("");
@@ -35,7 +35,7 @@ export default function SuccessClient() {
       return;
     }
 
-    setShareLink(`${window.location.origin}/v/${token}`);
+    setShareLink(`${window.location.origin}/app/v/${token}`);
   }, [router, token]);
 
   const handleCopy = async () => {

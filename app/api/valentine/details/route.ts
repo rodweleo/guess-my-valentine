@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
-import { getValentineCollection } from "@/lib/mongo";
+import { getShortTokenCollection, getValentineCollection } from "@/lib/mongo";
 import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
-  const { token } = (await req.json()) as { token: string };
+  const { shortCode } = (await req.json()) as { shortCode: string | number };
 
   try {
-    const decoded = verifyToken(token);
+    const shortTokens = await getShortTokenCollection();
+    const shortRecord = await shortTokens.findOne({ shortCode });
+
+    if (!shortRecord || shortRecord.used) {
+      throw new Error("Invalid or used short code");
+    }
+
+    const decoded = verifyToken(shortRecord.token);
 
     const valentines = await getValentineCollection();
     let objectId;

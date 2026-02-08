@@ -89,11 +89,13 @@ export default function VerifyOTP() {
 
       const data = await res.json();
 
-      if (!data.token) {
+      if (!data.shortCode) {
         throw new Error("Invalid response from server");
       }
 
-      router.push("/app/success?token=" + encodeURIComponent(data.token));
+      router.push(
+        "/app/success?shortCode=" + encodeURIComponent(data.shortCode)
+      );
     } catch (err) {
       console.error(err);
       setError("Invalid code. Please try again.");

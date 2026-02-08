@@ -38,7 +38,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         ref={ref}
         type="tel"
         inputMode="numeric"
-        placeholder="(555) 123-4567"
+        placeholder="(071) 234-5678"
         className={cn(
           "text-lg tracking-wide",
           error && "border-destructive focus-visible:ring-destructive",

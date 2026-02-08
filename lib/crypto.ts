@@ -12,3 +12,7 @@ export function hashPhone(phone: string) {
 export function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+export function generateShortCode(length = 6) {
+  return crypto.randomBytes(length).toString("base64url").slice(0, length);
+}

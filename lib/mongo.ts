@@ -34,3 +34,8 @@ export async function getTokenCollection() {
   const database = await getDb();
   return database.collection("Token");
 }
+
+export async function getShortTokenCollection() {
+  const database = await getDb();
+  return database.collection("Short_Tokens");
+}

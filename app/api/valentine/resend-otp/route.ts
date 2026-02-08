@@ -3,6 +3,7 @@ import { getValentineCollection } from "@/lib/mongo";
 import { generateOTP } from "@/lib/crypto";
 import { sendWhatsAppMessage } from "@/lib/whatsapp";
 import { ObjectId } from "mongodb";
+import NotificationService from "@/app/services/NotificationService";
 
 export async function POST(req: Request) {
   const { valentine_id } = (await req.json()) as { valentine_id: string };
@@ -32,10 +33,12 @@ export async function POST(req: Request) {
     }
   );
 
-  await sendWhatsAppMessage(
-    valentine.senderPhone,
-    `Your new Valentine OTP is ${otp}`
-  );
+  await NotificationService.sendNotification({
+    channel: "whatsapp",
+    message_type: "OTP",
+    to: valentine.senderPhone,
+    message: otp,
+  });
 
   return NextResponse.json({ success: true });
 }

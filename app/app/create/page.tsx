@@ -17,6 +17,7 @@ import { PhoneInput } from "@/components/PhoneInput";
 import { FloatingHearts } from "@/components/FloatingHearts";
 import { DATE_ACTIVITIES, EXPIRY_OPTIONS } from "@/lib/valentine-config";
 import { cn } from "@/lib/utils";
+import { normalizeKenyanPhone } from "@/lib/helpers";
 
 export default function CreateValentine() {
   const router = useRouter();
@@ -33,20 +34,33 @@ export default function CreateValentine() {
   const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
 
-    const senderDigits = senderPhone.replace(/\D/g, "").slice(-10);
-    const receiverDigits = receiverPhone.replace(/\D/g, "").slice(-10);
+    const senderFormatted = normalizeKenyanPhone(senderPhone);
+    const receiverFormatted = normalizeKenyanPhone(receiverPhone);
 
-    if (senderDigits.length !== 10) {
-      newErrors.senderPhone = "Please enter a valid 10-digit phone number";
+    if (!senderFormatted) {
+      newErrors.senderPhone = "Please enter a valid Kenyan phone number";
     }
-    if (receiverDigits.length !== 10) {
-      newErrors.receiverPhone = "Please enter a valid 10-digit phone number";
+
+    if (!receiverFormatted) {
+      newErrors.receiverPhone = "Please enter a valid Kenyan phone number";
     }
-    if (senderDigits === receiverDigits && senderDigits.length === 10) {
-      newErrors.receiverPhone = "You can't send a Valentine to yourself! 💝";
+
+    if (
+      senderFormatted &&
+      receiverFormatted &&
+      senderFormatted === receiverFormatted
+    ) {
+      newErrors.receiverPhone = "You can't send a Valentine to yourself! 💔";
     }
 
     setErrors(newErrors);
+
+    // Optional: store normalized numbers for API use
+    if (Object.keys(newErrors).length === 0) {
+      setSenderPhone(senderFormatted!);
+      setReceiverPhone(receiverFormatted!);
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -68,17 +82,14 @@ export default function CreateValentine() {
       try {
         setIsSubmitting(true);
 
-        const senderDigits = senderPhone.replace(/\D/g, "").slice(-10);
-        const receiverDigits = receiverPhone.replace(/\D/g, "").slice(-10);
-
         const res = await fetch("/api/valentine/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            sender_phone: senderDigits,
-            receiver_phone: receiverDigits,
+            sender_phone: senderPhone,
+            receiver_phone: receiverPhone,
             message: hint.trim() || undefined,
             activities: selectedActivities,
             // expiryDays is currently not wired to backend; backend controls expiry window
@@ -98,7 +109,7 @@ export default function CreateValentine() {
         router.push(
           `/app/verify?valentineId=${encodeURIComponent(
             data.valentine_id
-          )}&phone=${encodeURIComponent(senderDigits)}`
+          )}&phone=${encodeURIComponent(senderPhone)}`
         );
       } catch (err) {
         console.error(err);
@@ -243,7 +254,7 @@ export default function CreateValentine() {
                   </Label>
                   <Input
                     id="hint"
-                    placeholder="e.g., Your secret admirer from work 😉"
+                    placeholder="e.g., Your secret admirer from work"
                     value={hint}
                     onChange={(e) => setHint(e.target.value)}
                     maxLength={100}

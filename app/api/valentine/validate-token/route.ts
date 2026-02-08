@@ -1,30 +1,44 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
-import { getTokenCollection, getValentineCollection } from "@/lib/mongo";
+import {
+  getTokenCollection,
+  getValentineCollection,
+  getShortTokenCollection,
+} from "@/lib/mongo";
 import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
-  const { token } = await req.json();
+  const { shortCode } = await req.json();
 
   try {
-    const decoded = verifyToken(token);
+    // Resolve short code → long token
+    const shortTokens = await getShortTokenCollection();
+    const shortRecord = await shortTokens.findOne({ shortCode });
 
+    if (!shortRecord || shortRecord.used) {
+      throw new Error("Invalid or used short code");
+    }
+
+    // Verify JWT
+    const decoded = verifyToken(shortRecord.token);
+
+    // Validate token record (existing logic)
     const tokens = await getTokenCollection();
     const tokenRecord = await tokens.findOne({ jti: decoded.jti });
 
-    if (!tokenRecord || tokenRecord.used) throw new Error();
-
-    const valentines = await getValentineCollection();
-    let valentine;
-    try {
-      valentine = await valentines.findOne({
-        _id: new ObjectId(String(decoded.vid)),
-      });
-    } catch {
-      throw new Error();
+    if (!tokenRecord || tokenRecord.used) {
+      throw new Error("Invalid token");
     }
 
-    if (!valentine || valentine.status !== "PENDING") throw new Error();
+    // Validate valentine
+    const valentines = await getValentineCollection();
+    const valentine = await valentines.findOne({
+      _id: new ObjectId(String(decoded.vid)),
+    });
+
+    if (!valentine || valentine.status !== "PENDING") {
+      throw new Error("Invalid valentine");
+    }
 
     return NextResponse.json({ valid: true });
   } catch {

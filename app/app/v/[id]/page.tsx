@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { ScratchCard } from "@/components/ScratchCard";
 import { DATE_ACTIVITIES } from "@/lib/valentine-config";
 import { cn } from "@/lib/utils";
+import { normalizeKenyanPhone } from "@/lib/helpers";
 
 type ViewState =
   | "loading"
@@ -55,7 +56,7 @@ export default function ValentineView() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ token: id }),
+          body: JSON.stringify({ shortCode: id }),
         });
 
         if (!res.ok) {
@@ -94,11 +95,11 @@ export default function ValentineView() {
   const handleGuess = () => {
     if (!id) return;
 
-    const normalized = guess.replace(/\D/g, "").slice(-10);
-    if (normalized.length !== 10) {
-      setGuessError("Please enter a valid 10-digit phone number");
-      return;
-    }
+    // const normalized = guess.replace(/\D/g, "").slice(-10);
+    // if (normalized.length !== 10) {
+    //   setGuessError("Please enter a valid 10-digit phone number");
+    //   return;
+    // }
 
     const submit = async () => {
       try {
@@ -108,8 +109,8 @@ export default function ValentineView() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            token: id,
-            guessed_phone: normalized,
+            shortCode: id,
+            guessed_phone: normalizeKenyanPhone(guess),
           }),
         });
 
@@ -180,7 +181,7 @@ export default function ValentineView() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                token: id,
+                shortCode: id,
                 response: "NO",
                 activities: [],
               }),
@@ -211,7 +212,7 @@ export default function ValentineView() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            token: id,
+            shortCode: id,
             response: "YES",
             activities: [selectedActivity],
           }),
@@ -404,9 +405,9 @@ export default function ValentineView() {
         <FloatingHearts />
         <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col items-center justify-center">
           <div className="text-center mb-8 animate-fade-in-up">
-            <Sparkles className="w-8 h-8 mx-auto text-accent mb-4 animate-sparkle" />
+            {/* <Sparkles className="w-8 h-8 mx-auto text-accent mb-4 animate-sparkle" /> */}
             <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
-              You Got It Right! 🎉
+              You Got It Right!
             </h1>
             <p className="text-muted-foreground">
               Now scratch to reveal your Valentine's message...
@@ -461,10 +462,10 @@ export default function ValentineView() {
                 fill="currentColor"
               />
               <CardTitle className="font-serif text-3xl">
-                Will You Be My Valentine?
+                Will You Be My Valentine &#128513; ?
               </CardTitle>
               <CardDescription className="text-base mt-2">
-                Your answer will make someone very happy 💕
+                Your answer will make someone very happy
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -474,14 +475,14 @@ export default function ValentineView() {
                     onClick={() => handleResponse(true)}
                     className="py-8 text-xl love-gradient text-primary-foreground rounded-xl"
                   >
-                    YES 💕
+                    YES &#128522;
                   </Button>
                   <Button
                     onClick={() => handleResponse(false)}
                     variant="outline"
                     className="py-8 text-xl rounded-xl"
                   >
-                    NO 😅
+                    NO &#128542;
                   </Button>
                 </div>
               ) : (

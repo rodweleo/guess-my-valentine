@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { hashPhone, generateOTP } from "@/lib/crypto";
 import { sendWhatsAppMessage } from "@/lib/whatsapp";
 import { getValentineCollection } from "@/lib/mongo";
+import NotificationService from "@/app/services/NotificationService";
 
 export async function POST(req: Request) {
   const { sender_phone, receiver_phone, message, activities } =
@@ -12,6 +13,13 @@ export async function POST(req: Request) {
   const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000);
 
   const valentines = await getValentineCollection();
+
+  await NotificationService.sendNotification({
+    channel: "whatsapp",
+    message_type: "OTP",
+    to: sender_phone,
+    message: otp,
+  });
 
   const insertResult = await valentines.insertOne({
     senderHash: hashPhone(sender_phone),
@@ -30,8 +38,6 @@ export async function POST(req: Request) {
     createdAt: new Date(),
     updatedAt: new Date(),
   });
-
-  await sendWhatsAppMessage(sender_phone, `Your Valentine OTP is ${otp}`);
 
   return NextResponse.json({
     success: true,
